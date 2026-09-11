@@ -104,18 +104,24 @@ Exponential backoff tăng dần thời gian chờ sau mỗi lần thất bại, 
 **Bạn chọn persona gì cho trợ lý của mình? Viết lại system prompt đó và giải
 thích 1–2 lựa chọn từ ngữ quan trọng trong prompt (ví dụ: vì sao yêu cầu
 "trả lời ngắn gọn", vì sao chỉ định ngôn ngữ...):**
-Tôi chọn persona **chuyên gia tài năng trong lĩnh vực AI Engineering**.
 
-**System prompt:**  
-“Bạn là chuyên gia tài năng trong lĩnh vực AI Engineering. Nhiệm vụ của bạn là giúp tôi trở thành một chuyên gia trong lĩnh vực AI Engineering.”
+Tôi chọn persona **mentor AI Engineering giàu kinh nghiệm**.
 
-Tôi yêu cầu **“trả lời bằng tiếng Việt”** để nội dung nhất quán và dễ tiếp cận với người học Việt Nam. Cụm từ **“ngắn gọn, dễ hiểu”** giúp hạn chế câu trả lời lan man, trong khi yêu cầu **“không giả định kiến thức nền”** khiến trợ lý giải thích phù hợp hơn với người mới.
+**System prompt:**
+
+> Bạn là một mentor AI Engineering giàu kinh nghiệm. Nhiệm vụ của bạn là hướng dẫn tôi học và thực hành AI Engineering từ nền tảng đến nâng cao. Hãy trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu và không giả định tôi đã có kiến thức nền. Khi giải thích, hãy trình bày trực giác trước, sau đó mới đi vào khái niệm kỹ thuật; đồng thời đưa ra ví dụ thực tế và gợi ý bước luyện tập tiếp theo.
+
+Tôi chọn cụm từ **“mentor AI Engineering”** vì tôi muốn trợ lý không chỉ trả lời các câu hỏi riêng lẻ mà còn định hướng cách học và thực hành trong lĩnh vực AI Engineering. Yêu cầu **“trình bày trực giác trước, sau đó mới đi vào khái niệm kỹ thuật”** giúp câu trả lời dễ tiếp cận với người mới nhưng vẫn có đủ chiều sâu chuyên môn.
+
 
 ### Câu 4.2 — Hạn chế & cải thiện
+
 **Trợ lý của bạn hiện có hạn chế lớn nhất là gì (ví dụ: history chỉ 3 lượt,
 không có bộ nhớ dài hạn, không kiểm duyệt nội dung...)? Đề xuất một cải
 thiện cụ thể và mô tả ngắn cách triển khai:**
+
 Hạn chế lớn nhất hiện tại là trợ lý chỉ lưu ba lượt hội thoại gần nhất, nên có thể quên mục tiêu hoặc thông tin quan trọng được đề cập trước đó. Một cải thiện cụ thể là bổ sung bộ nhớ hội thoại dạng tóm tắt: khi lịch sử vượt quá ba lượt, hệ thống dùng mô hình tạo một bản tóm tắt ngắn chứa các thông tin quan trọng như mục tiêu, sở thích và vấn đề đang xử lý. Bản tóm tắt này được lưu riêng và gửi kèm system prompt cùng ba lượt gần nhất trong mỗi request. Cách này giúp duy trì ngữ cảnh dài hạn mà không làm số lượng token tăng quá nhiều.
+
 ---
 
 ## Danh Sách Kiểm Tra Nộp Bài
