@@ -54,22 +54,28 @@ Chọn một đoạn văn tiếng Việt ~100 từ. So sánh số token theo `co
 
 **Hai con số chênh nhau bao nhiêu phần trăm? Vì sao tiếng Việt thường tốn
 nhiều token hơn tiếng Anh cùng độ dài?**
-> **1. Đoạn văn tiếng Việt thực nghiệm (~100 từ):**
-> *"Trí tuệ nhân tạo đang phát triển với tốc độ nhanh chóng và tạo ra những thay đổi sâu sắc trong mọi lĩnh vực của đời sống xã hội. Từ y tế, giáo dục cho đến tài chính và sản xuất, các mô hình ngôn ngữ lớn đang hỗ trợ con người xử lý khối lượng thông tin khổng lồ. Việc ứng dụng công nghệ này giúp tiết kiệm thời gian, tối ưu hóa năng suất và giảm thiểu các sai sót trong công việc hàng ngày. Tuy nhiên, sự phát triển này cũng đặt ra nhiều thách thức lớn về an toàn thông tin, quyền riêng tư và đạo đức. Do đó, việc xây dựng quy chuẩn là vô cùng cấp thiết."*
->
-> **2. So sánh kết quả:**
-> - **Số từ thực tế:** 104 từ (đo bằng `len(text.split())`).
-> - **Ước lượng Part 1 (`số từ / 0.75`):** $104 / 0.75 \approx 139$ token.
-> - **Số token thực tế theo `count_tokens` (tiktoken):**
->   - Với model `gpt-4o` (bộ mã hóa `o200k_base`): **158 token** (~1.52 token/từ).
->   - *(Nếu dùng model `gpt-4` với bộ mã hóa cũ `cl100k_base`: **188 token**, ~1.81 token/từ).*
-> - **Tỷ lệ chênh lệch:**
->   $$\frac{|158 - 139|}{139} \times 100\% \approx 13.7\%$$
->   *(Nếu so với `cl100k_base` thì chênh lệch lên đến $\frac{|188 - 139|}{139} \times 100\% \approx 35.3\%$).*
->   $\rightarrow$ Số token thực tế luôn **lớn hơn đáng kể** so với công thức ước lượng thô $số\ từ / 0.75$.
->
-> **3. Vì sao tiếng Việt tốn nhiều token hơn tiếng Anh cùng độ dài?**
-> - **Tập dữ liệu huấn luyện (Training Corpus) thiên lệch:** Các thuật toán tokenizer (như BPE — Byte-Pair Encoding) xây dựng bộ từ điển (vocabulary) dựa trên tần suất xuất hiện trong tập ngữ liệu tiền huấn luyện khổng lồ, vốn chiếm hơn 80–90% là tiếng Anh. Do đó, hầu hết các từ nguyên vẹn của tiếng Anh đều có sẵn trong từ điển thành 1 token, trong khi tiếng Việt chiếm tỷ trọng nhỏ nên ít từ vựng nguyên vẹn hơn.
+
+Đoạn văn được sử dụng:
+
+> Trí tuệ nhân tạo đang phát triển với tốc độ nhanh chóng và tạo ra những thay đổi sâu sắc trong mọi lĩnh vực của đời sống xã hội. Từ y tế, giáo dục cho đến tài chính và sản xuất, các mô hình ngôn ngữ lớn đang hỗ trợ con người xử lý khối lượng thông tin khổng lồ. Việc ứng dụng công nghệ này giúp tiết kiệm thời gian, tối ưu hóa năng suất và giảm thiểu các sai sót trong công việc hàng ngày. Tuy nhiên, sự phát triển này cũng đặt ra những câu hỏi về quyền riêng tư và đạo đức.
+
+Khi dùng `len(text.split())`, đoạn văn có 106 đơn vị được phân tách bằng khoảng trắng. Cách đếm này chỉ mang tính gần đúng vì trong tiếng Việt, một từ có thể gồm nhiều tiếng, chẳng hạn “nhân tạo” hoặc “trí tuệ”.
+
+Theo công thức của Part 1:
+
+
+$$\frac{106}{0.75} \approx 141.3\text{ token}$$
+
+
+Khi dùng `count_tokens(text, model="gpt-4o")`, kết quả là 127 token. Hai kết quả chênh nhau khoảng 14,3 token. Nếu lấy kết quả ước lượng làm mốc, tỷ lệ chênh lệch là:
+
+$$
+\frac{|127-141.3|}{141.3}\times100\% \approx 10.1\%
+$$
+
+Như vậy, trong ví dụ này, số token thực tế thấp hơn giá trị ước lượng khoảng 10,1%. Điều này cho thấy quy tắc “0,75 từ tương đương 1 token” chỉ là một cách ước lượng nhanh và không chính xác cho mọi ngôn ngữ.
+
+Tiếng Việt thường có thể cần nhiều token hơn tiếng Anh cho cùng một lượng nội dung vì tokenizer được xây dựng từ những chuỗi byte hoặc cụm ký tự xuất hiện phổ biến trong dữ liệu dùng để tạo vocabulary. Các chuỗi tiếng Anh thông dụng thường dễ được gộp thành token dài, trong khi một số từ tiếng Việt có dấu có thể bị chia thành nhiều token, đặc biệt với các encoding cũ. Tuy nhiên, điều này không phải lúc nào cũng đúng; kết quả còn phụ thuộc vào nội dung và encoding của model. Chẳng hạn, `o200k_base` của GPT-4o xử lý văn bản đa ngôn ngữ hiệu quả hơn nhiều encoding trước đó.
 
 
 ---
@@ -77,8 +83,10 @@ nhiều token hơn tiếng Anh cùng độ dài?**
 ## Block 3 — Streaming & Độ Bền (trả lời sau Checkpoint 3)
 
 ### Câu 3.1 — Trải nghiệm người dùng với streaming
+
 **Streaming quan trọng nhất trong trường hợp nào, và khi nào thì
 non-streaming lại phù hợp hơn?** (1 đoạn văn)
+
 Streaming quan trọng nhất khi mô hình tạo câu trả lời dài hoặc có độ trễ cao, vì người dùng có thể đọc nội dung ngay khi từng phần được sinh ra thay vì chờ toàn bộ kết quả hoàn tất; điều này giúp hệ thống có cảm giác phản hồi nhanh và phù hợp với chatbot, trợ lý viết nội dung. 
 Non-streaming phù hợp hơn khi kết quả ngắn, cần xử lý toàn bộ trước khi hiển thị, cần kiểm tra tính hợp lệ, hoặc khi ứng dụng chỉ tiếp tục sau khi nhận được một phản hồi hoàn chỉnh. Non-streaming có thể sử dụng trong trường hợp ta không cần stream text, mà ta chỉ cần câu trả lời cuối cùng để làm input cho agent trong Agentic AI
 ### Câu 3.2 — Vì sao backoff theo cấp số nhân?
@@ -96,10 +104,10 @@ Exponential backoff tăng dần thời gian chờ sau mỗi lần thất bại, 
 **Bạn chọn persona gì cho trợ lý của mình? Viết lại system prompt đó và giải
 thích 1–2 lựa chọn từ ngữ quan trọng trong prompt (ví dụ: vì sao yêu cầu
 "trả lời ngắn gọn", vì sao chỉ định ngôn ngữ...):**
-Tôi chọn persona **trợ lý học tập thân thiện dành cho sinh viên mới học lập trình**.
+Tôi chọn persona **chuyên gia tài năng trong lĩnh vực AI Engineering**.
 
 **System prompt:**  
-“Bạn là một trợ lý học tập thân thiện, kiên nhẫn và chính xác. Hãy trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu và ưu tiên ví dụ thực tế. Khi giải thích thuật ngữ kỹ thuật, không giả định người dùng đã có kiến thức nền. Nếu không chắc chắn, hãy nói rõ thay vì tự suy đoán.”
+“Bạn là chuyên gia tài năng trong lĩnh vực AI Engineering. Nhiệm vụ của bạn là giúp tôi trở thành một chuyên gia trong lĩnh vực AI Engineering.”
 
 Tôi yêu cầu **“trả lời bằng tiếng Việt”** để nội dung nhất quán và dễ tiếp cận với người học Việt Nam. Cụm từ **“ngắn gọn, dễ hiểu”** giúp hạn chế câu trả lời lan man, trong khi yêu cầu **“không giả định kiến thức nền”** khiến trợ lý giải thích phù hợp hơn với người mới.
 
