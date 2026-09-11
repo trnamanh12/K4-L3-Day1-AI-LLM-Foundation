@@ -70,8 +70,7 @@ nhiều token hơn tiếng Anh cùng độ dài?**
 >
 > **3. Vì sao tiếng Việt tốn nhiều token hơn tiếng Anh cùng độ dài?**
 > - **Tập dữ liệu huấn luyện (Training Corpus) thiên lệch:** Các thuật toán tokenizer (như BPE — Byte-Pair Encoding) xây dựng bộ từ điển (vocabulary) dựa trên tần suất xuất hiện trong tập ngữ liệu tiền huấn luyện khổng lồ, vốn chiếm hơn 80–90% là tiếng Anh. Do đó, hầu hết các từ nguyên vẹn của tiếng Anh đều có sẵn trong từ điển thành 1 token, trong khi tiếng Việt chiếm tỷ trọng nhỏ nên ít từ vựng nguyên vẹn hơn.
-> - **Ký tự có dấu thanh và mã hóa UTF-8:** Tiếng Việt sử dụng hệ thống chữ cái có dấu thanh và dấu phụ (ă, â, đ, ê, ô, ơ, ư và các dấu sắc, huyền, hỏi, ngã, nặng). Trong mã hóa UTF-8, ký tự ASCII tiếng Anh chỉ tốn 1 byte, còn ký tự tiếng Việt có dấu tốn từ 2 đến 3 bytes. Khi một từ tiếng Việt không nằm trọn vẹn trong từ điển của tokenizer, BPE buộc phải chia cắt từ đó thành nhiều subwords hoặc từng byte riêng lẻ (ví dụ từ *"nghiệm"*, *"triển"* có thể tốn 2–3 token), khiến số token đội lên nhanh chóng.
-> - **Đặc trưng ngôn ngữ đơn lập:** Tiếng Việt là ngôn ngữ đơn lập, các âm tiết tách rời nhau bằng khoảng trắng (ví dụ *"trí tuệ nhân tạo"* gồm 4 âm tiết/từ đơn, trong khi tiếng Anh *"artificial intelligence"* chỉ gồm 2 từ đơn). Khi tính bằng số từ hay số ký tự, tiếng Việt cần nhiều đơn vị từ vựng hơn để diễn đạt cùng một lượng thông tin ngữ nghĩa.
+
 
 ---
 
