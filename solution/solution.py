@@ -47,7 +47,7 @@ def call_openai(
     model: str = OPENAI_MODEL,
     temperature: float = 0.7,
     top_p: float = 0.9,
-    max_tokens: int = 256,
+    max_tokens: int = 8192,
 ) -> tuple[str, float]:
     """
     Gọi OpenAI Chat Completions API, trả về nội dung phản hồi + độ trễ.
@@ -154,7 +154,7 @@ def chat_with_system_prompt(
     user_prompt: str,
     model: str = OPENAI_MODEL,
     temperature: float = 0.7,
-    max_tokens: int = 256,
+    max_tokens: int = 8192,
 ) -> tuple[str, float]:
     """
     Gọi API với MESSAGES gồm 2 phần: system prompt (định hình vai trò/persona
@@ -219,8 +219,9 @@ def count_tokens(text: str, model: str = OPENAI_MODEL) -> int:
     """
     # TODO: dùng tiktoken để đếm token, có fallback khi lỗi
     # raise NotImplementedError("Implement count_tokens")
-    import tiktoken
+    # import tiktoken
     try:
+        import tiktoken
         enc = tiktoken.encoding_for_model(model)
         return len(enc.encode(text))
     except Exception:
@@ -494,20 +495,31 @@ def format_comparison_table(results: list[dict]) -> str:
 # ---------------------------------------------------------------------------
 # Entry point — demo chạy thật (cần OPENAI_API_KEY)
 # ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    print("=== So sánh model ===")
-    result = compare_models(
-        "Giải thích khác biệt giữa temperature và top_p trong một câu."
-    )
-    for key, value in result.items():
-        print(f"{key}: {value}")
+# if __name__ == "__main__":
+    # print("=== So sánh model ===")
+    # result = compare_models(
+    #     "Giải thích khác biệt giữa temperature và top_p trong một câu."
+    # )
+    # for key, value in result.items():
+    #     print(f"{key}: {value}")
 
-    print("\n=== Trợ lý CLI (gõ 'quit' để thoát) ===")
-    stats = run_assistant(
-        persona="Bạn là trợ giảng thân thiện của khóa AI, "
-                "trả lời ngắn gọn bằng tiếng Việt.",
-    )
-    print("\n--- Thống kê phiên chat ---")
-    for key, value in stats.items():
-        if key != "history":
-            print(f"{key}: {value}")
+    # print("\n=== Trợ lý CLI (gõ 'quit' để thoát) ===")
+    # stats = run_assistant(
+    #     persona="Bạn là trợ giảng thân thiện của khóa AI, "
+    #             "trả lời ngắn gọn bằng tiếng Việt.",
+    # )
+    # print("\n--- Thống kê phiên chat ---")
+    # for key, value in stats.items():
+    #     if key != "history":
+    #         print(f"{key}: {value}")
+
+if __name__ == "__main__":
+    system_prompt = "Bạn là giáo viên tiểu học, giải thích thật đơn giản cho trẻ 8 tuổi."
+    system_prompt2 = "Bạn là chuyên gia tài chính, trả lời chuyên sâu bằng thuật ngữ kỹ thuật."
+    prompt = "Giải thích blockchain là gì?"
+    response1 = chat_with_system_prompt(system_prompt, prompt)
+    response2 = chat_with_system_prompt(system_prompt2, prompt)
+    print("System Prompt 1:", system_prompt)
+    print("Response 1:", response1[0])
+    print("System Prompt 2:", system_prompt2)
+    print("Response 2:", response2[0])
